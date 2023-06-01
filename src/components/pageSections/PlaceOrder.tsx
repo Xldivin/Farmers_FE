@@ -1,4 +1,4 @@
-import { Box, Container, FormGroup, Typography } from "@mui/material";
+import { Box, CircularProgress, Container, FormGroup, Typography } from "@mui/material";
 import CustomTextField from "../formElements/Textfield";
 import CustomButton from "../formElements/Button";
 import axios from "axios";
@@ -132,7 +132,7 @@ export default function PlaceOrder() {
                                 />
                             </Box>
                             <CustomButton
-                                label={isLoading ? "Saving..." : "Place Order"}
+                                label={isLoading ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : "Place Order"}
                                 containerStyle={customButtonStyle}
                                 type="submit"
                                 onClick={formik.submitForm}

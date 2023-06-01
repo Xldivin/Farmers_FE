@@ -1,4 +1,4 @@
-import { Box, Container, FormGroup, Typography } from "@mui/material";
+import { Box, CircularProgress, Container, FormGroup, Typography } from "@mui/material";
 import Link from "next/link";
 import CustomTextField from "../formElements/Textfield";
 import CustomButton from "../formElements/Button";
@@ -39,6 +39,7 @@ export default function Login() {
                 resetForm();
                 console.log(res)
                 console.log(res.data.user.role)
+                localStorage.setItem('userRole', res.data.user.role);
                 if(res.data.user.role === 'user'){
                     router.push("/placeOrder");
                 }else{
@@ -96,7 +97,7 @@ export default function Login() {
                                 onChange={formik.handleChange}
                             />
                             <CustomButton
-                                label={isLoading ? "Checking..." : "login"}
+                                label={isLoading ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : "login"}
                                 containerStyle={customButtonStyle}
                                 type="submit"
                                 onClick={formik.submitForm}

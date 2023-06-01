@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@mui/material';
 
 interface ICustomButtonProps {
-  label: string;
+  label: string | JSX.Element;
   type: 'button'| 'submit' | 'reset';
   containerStyle: React.CSSProperties;
   onClick?: () => void;
