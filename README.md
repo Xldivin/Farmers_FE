@@ -6,7 +6,6 @@ This project involves developing a system for farmers and an agro-input store to
 ## Table of Contents
 
 - [Installation](#installation)
-- [Usage](#usage)
 - [Features](#features)
 
 ## Installation
