@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, Button, TablePagination, TableSortLabel } from '@mui/material';
+import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, Button, TablePagination, TableSortLabel, CircularProgress } from '@mui/material';
 
 interface IOrder {
     _id: number;
@@ -10,6 +10,8 @@ interface IOrder {
     seeds: string;
     isPaid: boolean;
     status: string;
+    loading?: boolean;
+    loading2?: boolean;
 }
 
 const OrdersListing = () => {
@@ -18,57 +20,77 @@ const OrdersListing = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
     const [sortBy, setSortBy] = useState<keyof IOrder>('farmerName');
+    const [loading, setLoading] = useState(false);
+    const [loading2, setLoading2] = useState(false);
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get('http://localhost:3002/api/v1/orders');
+                const response = await axios.get('https://farmers-be.onrender.com/api/v1/orders');
                 setOrders(response.data.data);
             } catch (error) {
-                console.error('Error fetching orders:', error);
+                const responseError = error as { response: { data: { error: string } } };
+                alert(responseError.response.data.error);
             }
         };
 
         fetchOrders();
     }, []);
 
-    console.log(orders)
 
     const handleAccept = async (orderId: number) => {
-        // Handle accept logic here
         console.log(`Accepted order with ID: ${orderId}`);
 
-        await axios({
-            method: 'PUT',
-            url: `http://localhost:3002/api/v1/accept/${orderId}`
-        })
-        .then(function (res) {
-                console.log(res)
-                alert('The order have been accepted')
-            })
-        .catch(function (error) {
-                alert("error occured")
-                console.log(error)
-            });
+        try {
+            setOrders(prevOrders =>
+                prevOrders.map(order =>
+                    order._id === orderId ? { ...order, loading: true } : order
+                )
+            );
+
+            const response = await axios.put(`https://farmers-be.onrender.com/api/v1/accept/${orderId}`);
+            console.log(response);
+            alert('The order has been accepted');
+            window.location.reload();
+        } catch (error) {
+            const responseError = error as { response: { data: { error: string } } };
+            alert(responseError.response.data.error);
+        } finally {
+            setOrders(prevOrders =>
+                prevOrders.map(order =>
+                    order._id === orderId ? { ...order, loading: false } : order
+                )
+            );
+        }
     };
 
     const handleReject = async (orderId: number) => {
         console.log(`Rejected order with ID: ${orderId}`);
 
-        await axios({
-            method: 'DELETE',
-            url: `http://localhost:3002/api/v1/orders/${orderId}`
-        })
-        .then(function (res) {
-                console.log(res)
-                alert('The order have been rejected')
-            })
-        .catch(function (error) {
-                alert("error occured")
-                console.log(error)
-            });
+        try {
+            setOrders(prevOrders =>
+                prevOrders.map(order =>
+                    order._id === orderId ? { ...order, loading2: true } : order
+                )
+            );
 
+            const response = await axios.delete(`https://farmers-be.onrender.com/api/v1/orders/${orderId}`);
+            console.log(response);
+            alert('The order has been rejected');
+            window.location.reload();
+        } catch (error) {
+            const responseError = error as { response: { data: { error: string } } };
+            alert(responseError.response.data.error);
+        } finally {
+            setOrders(prevOrders =>
+                prevOrders.map(order =>
+                    order._id === orderId ? { ...order, loading2: false } : order
+                )
+            );
+        }
     };
+
+
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
         setPage(newPage);
@@ -156,11 +178,33 @@ const OrdersListing = () => {
                                 <TableCell sx={{ display: "flex" }}>
                                     {order.status === 'pending' ? (
                                         <>
-                                            <Button variant="contained" color="success" size="small" onClick={() => handleAccept(order._id)}>
-                                                Accept
+                                            <Button
+                                                variant="contained"
+                                                color="success"
+                                                size="small"
+                                                onClick={() => handleAccept(order._id)}
+                                                disabled={order.loading}
+                                            >
+                                                {order.loading ? (
+                                                    <CircularProgress size={20} sx={{ color: '#fff' }} />
+                                                ) : (
+                                                    'Accept'
+                                                )}
                                             </Button>
-                                            <Button variant="contained" color="error" size="small" sx={{ marginLeft: "5px" }} onClick={() => handleReject(order._id)}>
-                                                Reject
+
+                                            <Button
+                                                variant="contained"
+                                                color="error"
+                                                size="small"
+                                                sx={{ marginLeft: '5px' }}
+                                                onClick={() => handleReject(order._id)}
+                                                disabled={order.loading2}
+                                            >
+                                                {order.loading2 ? (
+                                                    <CircularProgress size={20} sx={{ color: '#fff' }} />
+                                                ) : (
+                                                    'Reject'
+                                                )}
                                             </Button>
                                         </>
                                     ) : (

@@ -4,6 +4,7 @@ import CustomButton from "../formElements/Button";
 import axios from "axios";
 import { FormikHelpers, useFormik } from "formik";
 import { useRouter } from "next/router";
+import { useState } from "react";
 interface IValue {
     farmerName: string;
     landSize: number;
@@ -13,7 +14,7 @@ interface IValue {
     seedsQuantity: number;
 }
 export default function PlaceOrder() {
-
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const customButtonStyle: React.CSSProperties = {
         marginBottom: '16px',
@@ -30,10 +31,11 @@ export default function PlaceOrder() {
     };
 
     const handleFormSubmit = async (values: IValue, { resetForm } : FormikHelpers<any>) => {
+        setIsLoading(true)
         console.log(values);
         await axios({
             method: 'POST',
-            url:  'http://localhost:3002/api/v1/orders',
+            url:  'https://farmers-be.onrender.com/api/v1/orders',
             data: values
         })
             .then(function (res) {
@@ -41,9 +43,11 @@ export default function PlaceOrder() {
                 localStorage.setItem("farmerId",res.data.data._id);
                 router.push("/payPage");
         })
-            .catch(function (res) {
-                alert("error occured")
+            .catch(function (error) {
+                const responseError = error as { response: { data: { error: string } } };
+                alert(responseError.response.data.error);
         });
+        setIsLoading(false)
     };
     const initialValues = {
         farmerName: "",
@@ -128,10 +132,11 @@ export default function PlaceOrder() {
                                 />
                             </Box>
                             <CustomButton
-                                label="Place Order"
+                                label={isLoading ? "Saving..." : "Place Order"}
                                 containerStyle={customButtonStyle}
                                 type="submit"
                                 onClick={formik.submitForm}
+                                disabled={isLoading}
                             />
                         </FormGroup>
                     </form>

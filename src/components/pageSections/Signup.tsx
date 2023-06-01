@@ -6,8 +6,7 @@ import CustomButton from "../formElements/Button";
 import { FormikHelpers, useFormik } from "formik";
 import axios from "axios";
 import { useRouter } from "next/router";
-
-
+import { useState } from "react";
 
 interface IValue {
     firstName: string;
@@ -17,8 +16,8 @@ interface IValue {
     role: string;
 }
 export default function Signup() {
+    const [isLoading, setIsLoading] = useState(false);
     const options = [
-        { value: 'admin', label: 'Admin' },
         { value: 'user', label: 'User' },
     ];
     const customButtonStyle: React.CSSProperties = {
@@ -39,22 +38,28 @@ export default function Signup() {
     };
     const router = useRouter();
 
-    const handleFormSubmit = async (values :IValue,  { resetForm } : FormikHelpers<any>) => {
+    const handleFormSubmit = async (values: IValue, { resetForm }: FormikHelpers<any>) => {
+        setIsLoading(true);
         console.log(values);
         await axios({
             method: 'POST',
-            url:  'http://localhost:3002/api/v1/signup',
+            url: 'https://farmers-be.onrender.com/api/v1/signup',
             data: values
         })
             .then(function (res) {
-                console.log(res.data.data._id);
-                localStorage.setItem("userId",res.data.data._id);
+                console.log(res.data.data.role);
                 resetForm();
-                router.push("/login");
-        })
-            .catch(function (res) {
-                alert("error occured")
-        });
+                if(res.data.data.role === 'user'){
+                    router.push("/placeOrder");
+                }else{
+                    router.push('/ordersPage');
+                }
+            })
+            .catch(function (error) {
+                const responseError = error as { response: { data: { error: string } } };
+                alert(responseError.response.data.error);
+            });
+        setIsLoading(false);
     };
     const initialValues = {
         firstName: "",
@@ -78,7 +83,7 @@ export default function Signup() {
                     <Typography>
                         Already signed up?
                     </Typography>
-                    <Link href={"/"}>
+                    <Link href={"/login"}>
                         Login
                     </Link>
                 </Box>
@@ -131,10 +136,11 @@ export default function Signup() {
                                 onChange={formik.handleChange}
                             />
                             <CustomButton
-                                label="signup"
+                                label={isLoading ? "Saving..." : "signup"}
                                 containerStyle={customButtonStyle}
                                 type="submit"
                                 onClick={formik.submitForm}
+                                disabled={isLoading}
                             />
                         </FormGroup>
                     </form>

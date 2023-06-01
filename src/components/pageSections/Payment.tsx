@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, CardContent, Typography, Box, Container } from '@mui/material';
-import CustomButton from '../formElements/Button';
 import axios from 'axios';
 
 interface IOrder {
@@ -23,7 +22,7 @@ const FarmerDetails = () => {
     const handlePayment = async (orderId: number) => {
         await axios({
             method: 'PUT',
-            url: `http://localhost:3002/api/v1/pay/${orderId}`
+            url: `https://farmers-be.onrender.com/api/v1/pay/${orderId}`
         })
             .then(function (res) {
                 console.log(res)
@@ -31,8 +30,8 @@ const FarmerDetails = () => {
                 setPayedFlag(true);
             })
             .catch(function (error) {
-                alert("error occured")
-                console.log(error)
+                const responseError = error as { response: { data: { error: string } } };
+                alert(responseError.response.data.error);
             });
     };
 
@@ -40,11 +39,12 @@ const FarmerDetails = () => {
         const fetchOrders = async () => {
             try {
                 let userId = localStorage.getItem("farmerId")
-                const response = await axios.get(`http://localhost:3002/api/v1/orders/${userId}`);
+                const response = await axios.get(`https://farmers-be.onrender.com/api/v1/orders/${userId}`);
                 setOrder(response.data.data);
                 console.log(response)
             } catch (error) {
-                console.error('Error fetching orders:', error);
+                const responseError = error as { response: { data: { error: string } } };
+                alert(responseError.response.data.error);
             }
         };
 

@@ -18,7 +18,7 @@ export default function CustomTextField({ label, type, name, placeholder, contai
   return (
     <TextField
       label={label}
-      type=""
+      type={type}
       name={name}
       placeholder={placeholder}
       size="small"

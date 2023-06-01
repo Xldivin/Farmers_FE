@@ -6,13 +6,16 @@ interface ICustomButtonProps {
   type: 'button'| 'submit' | 'reset';
   containerStyle: React.CSSProperties;
   onClick?: () => void;
+  disabled?: boolean; 
 }
 
-export default function CustomButton({ label, type, containerStyle }: ICustomButtonProps) {
+export default function CustomButton({ label, type, containerStyle, onClick, disabled }: ICustomButtonProps) {
   return (
     <Button
-      style={containerStyle} // Use the passed containerStyle prop
+      style={containerStyle}
       type={type}
+      onClick={onClick}
+      disabled={disabled}
     >
       {label}
     </Button>

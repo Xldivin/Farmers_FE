@@ -1,19 +1,18 @@
 import { Box, Container, FormGroup, Typography } from "@mui/material";
 import Link from "next/link";
 import CustomTextField from "../formElements/Textfield";
-import CustomSelect from "../formElements/Select";
 import CustomButton from "../formElements/Button";
 import { FormikHelpers, useFormik } from "formik";
 import axios from "axios";
 import { useRouter } from "next/router";
-
-
+import { useState } from "react";
 
 interface IValue {
     email: string;
     password: string;
 }
 export default function Login() {
+    const [isLoading, setIsLoading] = useState(false);
     const customButtonStyle: React.CSSProperties = {
         marginBottom: '16px',
         marginTop: '16px',
@@ -29,12 +28,11 @@ export default function Login() {
     };
     const router = useRouter();
     const handleFormSubmit = async (values: IValue,  { resetForm } : FormikHelpers<any>) => {
+        setIsLoading(true);
         console.log(values);
-        let userId = localStorage.getItem("userId")
-        console.log(userId)
         await axios({
             method: 'POST',
-            url:  `http://localhost:3002/api/v1/login/${userId}`,
+            url:  `https://farmers-be.onrender.com/api/v1/login`,
             data: values
         })
             .then(function (res) {
@@ -48,9 +46,10 @@ export default function Login() {
                 }
         })
             .catch(function (error) {
-                alert("we do not have you please signup")
-                console.log(error)
+                const responseError = error as { response: { data: { error: string } } };
+                alert(responseError.response.data.error);
         });
+        setIsLoading(false);
     };
     const initialValues = {
         email: "",
@@ -97,10 +96,11 @@ export default function Login() {
                                 onChange={formik.handleChange}
                             />
                             <CustomButton
-                                label="login"
+                                label={isLoading ? "Checking..." : "login"}
                                 containerStyle={customButtonStyle}
                                 type="submit"
                                 onClick={formik.submitForm}
+                                disabled={isLoading}
                             />
                         </FormGroup>
                     </form>
