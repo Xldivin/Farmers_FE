@@ -31,7 +31,9 @@ const FarmerDetails = () => {
                 const response = await axios.get(`https://farmers-be.onrender.com/api/v1/orders/${userId}`);
                 setOrder(response.data.data);
                 console.log(response.data.data.amountToBePaid)
-                localStorage.setItem("amount", response.data.data.amountToBePaid)
+                console.log(response.data.data._id)
+                localStorage.setItem("orderId", response.data.data._id);
+                localStorage.setItem("amount", response.data.data.amountToBePaid);
             } catch (error) {
                 const responseError = error as { response: { data: { error: string } } };
                 alert(responseError.response.data.error);

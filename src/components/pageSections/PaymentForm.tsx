@@ -63,10 +63,12 @@ const PaymentForm = () => {
         },
         (status: number, response: any) => {
           if (status === 200) {
+            let orderId = localStorage.getItem("orderId")
             axios
               .post('https://farmers-be.onrender.com/api/v1/payment', {
                 token: response,
                 amount,
+                orderId
               })
               .then((res) => {
                 window.alert("We have successfully received your payment");
