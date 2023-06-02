@@ -39,7 +39,7 @@ const HomePage = () => {
                     <Grid item xs={12} sm={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                         <animated.div style={animationProps}>
                             <Typography variant="h4" sx={{ mb: 2, textAlign: 'center', fontWeight: 600 }}>
-                                Welcome to our Agro-Input Store!
+                                Welcome to Agro-Input Store!
                             </Typography>
                             <Typography variant="body1" sx={{ mb: 2, fontSize: '21px' }}>
                                 Our system is designed to streamline the process of buying fertilizers and seeds for farmers with specific land sizes. Here's how it works:
