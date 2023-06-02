@@ -16,7 +16,7 @@ export default function Login() {
     const customButtonStyle: React.CSSProperties = {
         marginBottom: '16px',
         marginTop: '16px',
-        background: "#0BDA51",
+        background: "#2e7d32",
         color: "#fff",
         width: '40rem',
         height: '2.5rem',
@@ -71,7 +71,7 @@ export default function Login() {
                     <Typography>
                         Don't have an account?
                     </Typography>
-                    <Link href={"/"}>
+                    <Link href={"/signup"}>
                         Signup
                     </Link>
                 </Box>
@@ -102,6 +102,7 @@ export default function Login() {
                                 type="submit"
                                 onClick={formik.submitForm}
                                 disabled={isLoading}
+                                color="success"
                             />
                         </FormGroup>
                     </form>

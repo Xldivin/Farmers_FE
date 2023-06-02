@@ -19,7 +19,7 @@ export default function PlaceOrder() {
     const customButtonStyle: React.CSSProperties = {
         marginBottom: '16px',
         marginTop: '16px',
-        background: "#0BDA51",
+        background: "#2e7d32",
         color: "#fff",
         width: '42rem',
         height: '2.5rem',
@@ -137,6 +137,7 @@ export default function PlaceOrder() {
                                 type="submit"
                                 onClick={formik.submitForm}
                                 disabled={isLoading}
+                                color="success"
                             />
                         </FormGroup>
                     </form>

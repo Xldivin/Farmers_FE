@@ -1,9 +1,9 @@
-import Signup from "@/components/pageSections/Signup"
+import HomePage from "@/components/pageSections/Home"
 
 export default function Home() {
   return (
     <>
-      <Signup />
+      <HomePage />
     </>
   )
 }

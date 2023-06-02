@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, CardContent, Typography, Box, Container } from '@mui/material';
 import axios from 'axios';
+import { useRouter } from "next/router";
 
 interface IOrder {
     _id: number;
@@ -17,22 +18,10 @@ interface IOrder {
 
 const FarmerDetails = () => {
     const [order, setOrder] = useState<IOrder | null>(null);
-    const [payedFlag, setPayedFlag] = useState(false);
+    const router = useRouter();
 
-    const handlePayment = async (orderId: number) => {
-        await axios({
-            method: 'PUT',
-            url: `https://farmers-be.onrender.com/api/v1/pay/${orderId}`
-        })
-            .then(function (res) {
-                console.log(res)
-                alert('You have successfully paid wait for your order to be approved')
-                setPayedFlag(true);
-            })
-            .catch(function (error) {
-                const responseError = error as { response: { data: { error: string } } };
-                alert(responseError.response.data.error);
-            });
+    const handlePayment = async () => {
+        router.push("/payment");
     };
 
     useEffect(() => {
@@ -41,7 +30,8 @@ const FarmerDetails = () => {
                 let userId = localStorage.getItem("farmerId")
                 const response = await axios.get(`https://farmers-be.onrender.com/api/v1/orders/${userId}`);
                 setOrder(response.data.data);
-                console.log(response)
+                console.log(response.data.data.amountToBePaid)
+                localStorage.setItem("amount", response.data.data.amountToBePaid)
             } catch (error) {
                 const responseError = error as { response: { data: { error: string } } };
                 alert(responseError.response.data.error);
@@ -96,15 +86,9 @@ const FarmerDetails = () => {
                                 </Typography>
                             </Box>
                             <Box>
-                                {
-                                    !payedFlag ?
-                                        <Button onClick={() => handlePayment(order._id)} variant="contained" color="success" size="small">
-                                            Pay Order
-                                        </Button> :
-                                        <Button variant="contained" color="success" size="small" disabled>
-                                            Payed
-                                        </Button>
-                                }
+                                <Button onClick={() => handlePayment()} variant="contained" color="success" size="small">
+                                    Go to checkout page
+                                </Button>
                             </Box>
                         </Box>
                     ) : (
