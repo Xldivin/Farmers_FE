@@ -49,7 +49,7 @@ const PaymentForm = () => {
   };
 
   const handlePayment = async () => {
-    setIsLoading(true); // Set isLoading to true when submitting data
+    setIsLoading(true);
 
     let amount = localStorage.getItem("amount");
     try {
@@ -64,7 +64,7 @@ const PaymentForm = () => {
         (status: number, response: any) => {
           if (status === 200) {
             axios
-              .post('http://localhost:3002/api/v1/payment', {
+              .post('https://farmers-be.onrender.com/api/v1/payment', {
                 token: response,
                 amount,
               })
