@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TextField, Button, Box, CircularProgress } from '@mui/material';
 import { styled } from '@mui/system';
-import Cards from 'react-credit-cards';
+import Cards from "react-credit-cards-2"
 import 'react-credit-cards/es/styles-compiled.css';
 import axios from 'axios';
 import { formatCreditCardNumber,formatCVC, formatExpirationDate } from '@/utils/cardUtils';
